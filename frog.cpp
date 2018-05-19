@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <cstdlib>
+#include <thread>
 
 struct Frog {
 	int x;
@@ -44,7 +45,7 @@ Frog frogBackwards(Frog frog)
 	return frog;
 }
 
-void *frogAround(void *arg) {
+void frogAround() { //thread func
 Frog frog;
 frog.x = 10;
 frog.y = 10;
@@ -79,16 +80,16 @@ while (true) {
 
 int main()
 {
-	pthread_t thr;
-	int rc;
+	
 
 	initscr();
 	cbreak();
 	noecho();
 	curs_set(0);
-	rc = pthread_create(&thr, NULL, &frogAround, NULL);
-
-	pthread_join(thr, NULL);
+	
+	std::thread frogThread (frogAround);
+	frogThread.join();
+	
 
 	getch();
 	//while(true);
