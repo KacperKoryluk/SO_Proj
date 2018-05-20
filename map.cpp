@@ -29,43 +29,86 @@ BadObject moveBadObject (BadObject badObject) {
 //Thr func
 void badObjectBehaviour() {
 	BadObject dontAvoidThis;
-	dontAvoidThis.x = 0;
+	dontAvoidThis.x = 2;
 	dontAvoidThis.y = 10;
-	
-
-	while(dontAvoidThis.x < 40){
+	while(true){
 		move(dontAvoidThis.x, dontAvoidThis.y);
-		printw("OOO");
+		for(int i=0; i<3; i++)
+		printw("O");
 		refresh();
 		usleep(sec/2);
 		move(dontAvoidThis.x, dontAvoidThis.y);
 		printw("   ");
 		dontAvoidThis = moveBadObject(dontAvoidThis);
 		refresh();
+		if(dontAvoidThis.y ==37)
+			dontAvoidThis.y = 10;
 	}
-
-
+}
+void badObjectBehaviour2() {
+	BadObject dontAvoidThis;
+	dontAvoidThis.x = 3;
+	dontAvoidThis.y = 10;
+	while(true){
+		move(dontAvoidThis.x, dontAvoidThis.y);
+		for(int i=0; i<5; i++)
+		printw("O");
+		refresh();
+		usleep(sec/4);
+		move(dontAvoidThis.x, dontAvoidThis.y);
+		printw("     ");
+		dontAvoidThis = moveBadObject(dontAvoidThis);
+		refresh();
+		if(dontAvoidThis.y ==36)
+			dontAvoidThis.y = 10;
+	}
 }	
-
+void printMap()
+{
+	printw("          ");
+	for(int i=0; i<30; i++)
+	printw("-");
+	printw("\n");
+	for(int i=0; i<20; i++)
+	{	
+		for(int j=0; j<9; j++)
+			printw(" ");
+		printw("|");
+		for(int j=0; j<30; j++)
+			printw(" ");
+		printw("|");
+		printw("\n");
+		
+	}\
+	printw("          ");
+	for(int i=0; i<30; i++)
+		printw("-");
+}
 int main()
 {
 
 	std::thread thr[5];
-	
-	
+	std::thread thr2[2];
+
 	initscr();
 	noecho();
 	cbreak();
 	curs_set(0);
+	printMap();
 	for (int i = 0; i < 5; i++)
 	{
 		thr[i] = std::thread(badObjectBehaviour);
-		usleep(3*sec);
+		if(i<2)
+		{
+			thr2[i] = std::thread(badObjectBehaviour2);
+		}
+	 	usleep(3*sec);
 
 	}
 	for (int i = 0; i <1; i++)
 	{
 		thr[i].join();
+		thr2[i].join();
 	}
 
 
