@@ -45,6 +45,7 @@ void badObjectBehaviour() {
 			dontAvoidThis.y = 10;
 	}
 }
+//Thr func with bigger obstacle
 void badObjectBehaviour2() {
 	BadObject dontAvoidThis;
 	dontAvoidThis.x = 3;
@@ -62,7 +63,8 @@ void badObjectBehaviour2() {
 		if(dontAvoidThis.y ==36)
 			dontAvoidThis.y = 10;
 	}
-}	
+}
+//Border render
 void printMap()
 {
 	printw("          ");
