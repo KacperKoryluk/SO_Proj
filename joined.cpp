@@ -7,17 +7,31 @@
 #include <string.h>
 #include <cstdlib>
 #include <thread>
+#include <ctime>
 
 #define sec 1000000
 bool moveObstacles = true;
 bool frogLifetime = true;
+int points = 0;
 std::thread frogThread;
+std::thread flyThreads[4];
 
 
 struct Frog {
 	int x;
 	int y;	
 };
+struct Fly {
+	int x;
+	int y;
+};
+Fly fly;
+void sitFly(Fly fly)
+{
+	move(fly.x, fly.y);
+	printw("K");
+	refresh();
+}
 Frog frog; //Frog here
 void moveFrog(Frog frog)
 {	
@@ -56,7 +70,8 @@ void Death()
     move(frog.x, frog.y);
     printw("X");
     move(0, 0);
-    printw("You Died");
+    printw("You Died \n");
+    printw("Points: %i", points);
     moveObstacles = false;
     frogLifetime = false;
 
@@ -83,6 +98,10 @@ while (frogLifetime) {
                 Death();
                 break;
             }
+	    if((mvinch(frog.x, frog.y+1)) == 'K')
+	    {	
+		points++;
+	    }
 
 		    frog = frogForward(frog);
         }
@@ -96,7 +115,11 @@ while (frogLifetime) {
                 Death();
                 break;
             }
-		    frog = frogLeft(frog);
+	    if((mvinch(frog.x, frog.y+1)) == 'K')
+	    {	
+		points++;
+	    }
+	    frog = frogLeft(frog);
         }
 	}
 	
@@ -109,7 +132,10 @@ while (frogLifetime) {
                Death();
                break;
             }
-            
+      	    if((mvinch(frog.x, frog.y+1)) == 'K')
+	    {	
+		points++;
+	    }
 		    frog = frogRight(frog);
         }
 	}	
@@ -124,6 +150,10 @@ while (frogLifetime) {
                 break;
                 
             }
+	    if((mvinch(frog.x, frog.y+1)) == 'K')
+	    {	
+		points++;
+	    }
 		    frog = frogBackwards(frog);
         }
 	}
@@ -134,7 +164,13 @@ while (frogLifetime) {
         }
 	}
 }
-
+void flyAround()
+{
+	fly.x = rand() % 19 + 1;
+	fly.y = rand() % 29 + 10;
+	
+	sitFly(fly);
+}
 struct BadObject {
 	int x;
 	int y;
@@ -232,7 +268,7 @@ void printMap()
 
 int main()
 {
-
+	srand(time(NULL));
     std::thread thr[5];
 	std::thread thr2[2];
 
@@ -242,9 +278,12 @@ int main()
 	curs_set(0);
 
     
-	
 	frogThread = std::thread(frogAround); 
     printMap();
+	for(int i = 0; i < 4; i++)
+	{
+		flyThreads[i] = std::thread(flyAround);
+	}
 	for (int i = 0; i < 5; i++)
 	{
 		thr[i] = std::thread(badObjectBehaviour);
@@ -261,10 +300,10 @@ int main()
 	{
 		thr[i].join();
 		thr2[i].join();
+		flyThreads[i].join();
 	}
     
     frogThread.join();
-
 	getch();
 	//while(true);
 	endwin();
