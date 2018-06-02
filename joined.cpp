@@ -9,12 +9,16 @@
 #include <thread>
 
 #define sec 1000000
+bool moveObstacles = true;
+bool frogLifetime = true;
+std::thread frogThread;
+
 
 struct Frog {
 	int x;
 	int y;	
 };
-
+Frog frog; //Frog here
 void moveFrog(Frog frog)
 {	
 	
@@ -47,34 +51,87 @@ Frog frogBackwards(Frog frog)
 	return frog;
 }
 
+void Death()
+{   
+    move(frog.x, frog.y);
+    printw("X");
+    move(0, 0);
+    printw("You Died");
+    moveObstacles = false;
+    frogLifetime = false;
+
+}
+
 void frogAround() { //thread func
-Frog frog;
+
 frog.x = 10;
-frog.y = 10;
+frog.y = 24;
 
 moveFrog(frog);
 
-while (true) {
+while (frogLifetime) {
 
 	int ch = getch();
 	move(frog.x, frog.y);
 	printw(" ");
-	if (ch == 'd') {
-		frog = frogForward(frog);
+	if (ch == 'd' && frogLifetime == true) {
+
+        if((mvinch(frog.x, frog.y+1)) != '|')
+        {
+            if((mvinch(frog.x, frog.y+1)) == 'O')
+            {
+                Death();
+                break;
+            }
+
+		    frog = frogForward(frog);
+        }
 	}
 	
-	if (ch == 'w') {
-		frog = frogLeft(frog);
+	if (ch == 'w' && frogLifetime == true) {
+        if((mvinch(frog.x-1, frog.y)) != '-')
+        {
+            if((mvinch(frog.x-1, frog.y)) == 'O')
+            {
+                Death();
+                break;
+            }
+		    frog = frogLeft(frog);
+        }
 	}
 	
-	if (ch == 's') {
-		frog = frogRight(frog);
+	if (ch == 's' && frogLifetime == true) {
+
+        if((mvinch(frog.x+1, frog.y)) != '-')
+        {
+            if((mvinch(frog.x+1, frog.y)) == 'O')
+            {
+               Death();
+               break;
+            }
+            
+		    frog = frogRight(frog);
+        }
 	}	
-	if (ch == 'a'){
-		frog = frogBackwards(frog);
+	if (ch == 'a' && frogLifetime == true){
+
+        if(mvinch(frog.x, frog.y-1) != '|')
+        {
+            
+            if((mvinch(frog.x, frog.y-1)) == 'O')
+            {
+                Death();
+                break;
+                
+            }
+		    frog = frogBackwards(frog);
+        }
 	}
-		moveFrog(frog);
-		refresh();
+        if(frogLifetime==true)
+        {
+		    moveFrog(frog);
+		    refresh();
+        }
 	}
 }
 
@@ -99,12 +156,20 @@ void badObjectBehaviour() {
 	BadObject dontAvoidThis;
 	dontAvoidThis.x = 2;
 	dontAvoidThis.y = 10;
-	while(true){
+	while(moveObstacles){
 		move(dontAvoidThis.x, dontAvoidThis.y);
 		for(int i=0; i<3; i++)
 		printw("O");
 		refresh();
-		usleep(sec/2);
+        if(dontAvoidThis.x == frog.x && dontAvoidThis.y+3 == frog.y)
+            {
+                Death();
+            }
+		usleep((8*sec)/18);
+        if(dontAvoidThis.x == frog.x && dontAvoidThis.y+3 == frog.y)
+            {
+                Death();
+            }
 		move(dontAvoidThis.x, dontAvoidThis.y);
 		printw("   ");
 		dontAvoidThis = moveBadObject(dontAvoidThis);
@@ -118,12 +183,22 @@ void badObjectBehaviour2() {
 	BadObject dontAvoidThis;
 	dontAvoidThis.x = 3;
 	dontAvoidThis.y = 10;
-	while(true){
+	while(moveObstacles){
 		move(dontAvoidThis.x, dontAvoidThis.y);
 		for(int i=0; i<5; i++)
-		printw("O");
+        {
+		    printw("O");
+        }
+         if(dontAvoidThis.x == frog.x && dontAvoidThis.y+5 == frog.y)
+            {
+                Death();
+            }
 		refresh();
 		usleep(sec/4);
+        if(dontAvoidThis.x == frog.x && dontAvoidThis.y+3 == frog.y)
+            {
+                Death();
+            }
 		move(dontAvoidThis.x, dontAvoidThis.y);
 		printw("     ");
 		dontAvoidThis = moveBadObject(dontAvoidThis);
@@ -166,9 +241,9 @@ int main()
 	noecho();
 	curs_set(0);
 
-    std::thread frogThread (frogAround);
+    
 	
-	
+	frogThread = std::thread(frogAround); 
     printMap();
 	for (int i = 0; i < 5; i++)
 	{
@@ -180,11 +255,14 @@ int main()
 	 	usleep(3*sec);
 
 	}
+      
+    
 	for (int i = 0; i <1; i++)
 	{
 		thr[i].join();
 		thr2[i].join();
 	}
+    
     frogThread.join();
 
 	getch();
