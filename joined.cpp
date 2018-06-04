@@ -107,9 +107,11 @@ while (frogLifetime) {
                 Death();
                 break;
             }
+	   // for(int i =0; i<4; i++)
 	    if((mvinch(frog.x, frog.y+1)) == 'K')
 	    {	
 		points++;
+
 	    }
 
 		    frog = frogForward(frog);
@@ -124,7 +126,7 @@ while (frogLifetime) {
                 Death();
                 break;
             }
-	    if((mvinch(frog.x, frog.y+1)) == 'K')
+	    if((mvinch(frog.x-1, frog.y)) == 'K')
 	    {	
 		points++;
 	    }
@@ -145,7 +147,7 @@ while (frogLifetime) {
                Death();
                break;
             }
-      	    if((mvinch(frog.x, frog.y+1)) == 'K')
+      	    if((mvinch(frog.x+1, frog.y)) == 'K')
 	    {	
 		points++;
 	    }
@@ -163,7 +165,7 @@ while (frogLifetime) {
                 break;
                 
             }
-	    if((mvinch(frog.x, frog.y+1)) == 'K')
+	    if((mvinch(frog.x, frog.y-1)) == 'K')
 	    {	
 		points++;
 	    }
@@ -182,7 +184,7 @@ void flyAround()
 	fly.x = rand() % 19 + 1;
 	fly.y = rand() % 29 + 10;
 	sitFly(fly);
-	while(moveObstacles)
+	while(moveObstacles && fly.x!=frog.x && fly.y!=frog.y)
 	{
 		sitFly(fly);
 		usleep((sec)/18);
