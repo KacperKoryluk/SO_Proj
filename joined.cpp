@@ -189,6 +189,8 @@ void flyAround()
 		sitFly(fly);
 		usleep((sec)/18);
 	}
+	printw(" ");
+	refresh();
 }
 struct BadObject {
 	int x;
@@ -300,6 +302,12 @@ int main()
 	std::thread thr9[2];
 	std::thread thr10[5];
 
+	std::thread thr11[5];
+	std::thread thr12[2];
+	std::thread thr13[3];
+	std::thread thr14[2];
+	std::thread thr15[2];
+
 	initscr();
 	cbreak();
 	noecho();
@@ -332,6 +340,16 @@ int main()
 		if(i<2)
 		thr9[i] = std::thread(badObjectBehaviour,12,10);
 		thr10[i] = std::thread(badObjectBehaviour,13,2);
+
+		thr11[i] = std::thread(badObjectBehaviour,15,2);
+		if(i<2)
+		thr12[i] = std::thread(badObjectBehaviour2,16);
+		if(i<3)
+		thr13[i] = std::thread(badObjectBehaviour,17,9);
+		if(i<2)
+		thr14[i] = std::thread(badObjectBehaviour2,18);
+		if(i<2)
+		thr15[i] = std::thread(badObjectBehaviour,19,14);
 	 	usleep(3*sec);
 
 	}
@@ -349,6 +367,11 @@ int main()
 		thr8[i].join();
 		thr9[i].join();
 		thr10[i].join();
+		thr11[i].join();
+		thr12[i].join();
+		thr13[i].join();
+		thr14[i].join();
+		thr15[i].join();
 		flyThreads[i].join();
 	} 
     frogThread.join();
