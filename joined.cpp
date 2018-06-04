@@ -88,7 +88,7 @@ void Win()
 }
 void frogAround() { //thread func
 
-frog.x = 10;
+frog.x = 20;
 frog.y = 24;
 
 moveFrog(frog);
@@ -181,7 +181,7 @@ while (frogLifetime) {
 }
 void flyAround()
 {
-	fly.x = rand() % 19 + 1;
+	fly.x = rand() % 17 + 2;
 	fly.y = rand() % 29 + 10;
 	sitFly(fly);
 	while(moveObstacles && fly.x!=frog.x && fly.y!=frog.y)
@@ -207,9 +207,9 @@ BadObject moveBadObject (BadObject badObject) {
 	return badObject;
 }
 //Thr func
-void badObjectBehaviour() {
+void badObjectBehaviour(int x, int y) {
 	BadObject dontAvoidThis;
-	dontAvoidThis.x = 2;
+	dontAvoidThis.x = x;
 	dontAvoidThis.y = 10;
 	while(moveObstacles){
 		move(dontAvoidThis.x, dontAvoidThis.y);
@@ -220,7 +220,7 @@ void badObjectBehaviour() {
             {
                 Death();
             }
-		usleep((8*sec)/18);
+		usleep((y*sec)/18);
         if(dontAvoidThis.x == frog.x && dontAvoidThis.y+3 == frog.y)
             {
                 Death();
@@ -234,9 +234,9 @@ void badObjectBehaviour() {
 	}
 }
 //Thr func with bigger obstacle
-void badObjectBehaviour2() {
+void badObjectBehaviour2(int x) {
 	BadObject dontAvoidThis;
-	dontAvoidThis.x = 3;
+	dontAvoidThis.x = x;
 	dontAvoidThis.y = 10;
 	while(moveObstacles){
 		move(dontAvoidThis.x, dontAvoidThis.y);
@@ -288,8 +288,17 @@ void printMap()
 int main()
 {
 	srand(time(NULL));
-    std::thread thr[5];
+        std::thread thr[5];
+	std::thread thr3[5];
+	std::thread thr4[2];
+	std::thread thr5[3];
 	std::thread thr2[2];
+	std::thread thr6[2];
+
+	std::thread thr7[2];
+	std::thread thr8[3];
+	std::thread thr9[2];
+	std::thread thr10[5];
 
 	initscr();
 	cbreak();
@@ -305,11 +314,24 @@ int main()
 	}
 	for (int i = 0; i < 5; i++)
 	{
-		thr[i] = std::thread(badObjectBehaviour);
+		thr[i] = std::thread(badObjectBehaviour,2,8);
 		if(i<2)
-		{
-			thr2[i] = std::thread(badObjectBehaviour2);
-		}
+		thr2[i] = std::thread(badObjectBehaviour2,3);
+		thr3[i] = std::thread(badObjectBehaviour,5,2);
+		if(i<2)
+		thr4[i] = std::thread(badObjectBehaviour,6,10);
+		if(i<3)
+		thr5[i] = std::thread(badObjectBehaviour,7,6);
+		if(i<2)
+		thr6[i] = std::thread(badObjectBehaviour2,8);
+
+ 		if(i<2)
+		thr7[i] = std::thread(badObjectBehaviour2,10);
+		if(i<3)
+		thr8[i] = std::thread(badObjectBehaviour,11,6);
+		if(i<2)
+		thr9[i] = std::thread(badObjectBehaviour,12,10);
+		thr10[i] = std::thread(badObjectBehaviour,13,2);
 	 	usleep(3*sec);
 
 	}
@@ -319,6 +341,14 @@ int main()
 	{
 		thr[i].join();
 		thr2[i].join();
+		thr3[i].join();
+		thr4[i].join();
+		thr5[i].join();
+		thr6[i].join();
+		thr7[i].join();
+		thr8[i].join();
+		thr9[i].join();
+		thr10[i].join();
 		flyThreads[i].join();
 	} 
     frogThread.join();
