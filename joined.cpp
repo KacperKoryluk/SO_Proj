@@ -76,7 +76,16 @@ void Death()
     frogLifetime = false;
 
 }
+void Win()
+{   
+    move(frog.x, frog.y);
+    move(0, 0);
+    printw("You Win! \n");
+    printw("Points: %i", points);
+    moveObstacles = false;
+    frogLifetime = false;
 
+}
 void frogAround() { //thread func
 
 frog.x = 10;
@@ -120,7 +129,11 @@ while (frogLifetime) {
 		points++;
 	    }
 	    frog = frogLeft(frog);
-        }
+	    if(frog.x==1)
+	    {	
+		Win();
+	    }       
+}
 	}
 	
 	if (ch == 's' && frogLifetime == true) {
@@ -168,8 +181,12 @@ void flyAround()
 {
 	fly.x = rand() % 19 + 1;
 	fly.y = rand() % 29 + 10;
-	
 	sitFly(fly);
+	while(moveObstacles)
+	{
+		sitFly(fly);
+		usleep((sec)/18);
+	}
 }
 struct BadObject {
 	int x;
@@ -301,8 +318,7 @@ int main()
 		thr[i].join();
 		thr2[i].join();
 		flyThreads[i].join();
-	}
-    
+	} 
     frogThread.join();
 	getch();
 	//while(true);
