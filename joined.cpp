@@ -107,7 +107,6 @@ while (frogLifetime) {
                 Death();
                 break;
             }
-	   // for(int i =0; i<4; i++)
 	    if((mvinch(frog.x, frog.y+1)) == 'K')
 	    {	
 		points++;
@@ -181,12 +180,18 @@ while (frogLifetime) {
 }
 void flyAround()
 {
-	fly.x = rand() % 17 + 2;
-	fly.y = rand() % 29 + 10;
-	sitFly(fly);
-	while(moveObstacles && fly.x!=frog.x && fly.y!=frog.y)
+	Fly fly1;
+	fly1.x = rand() % 17 + 2;
+	fly1.y = rand() % 29 + 10;
+	sitFly(fly1);
+	while(moveObstacles)
 	{
-		sitFly(fly);
+		if(fly1.y!=frog.y || fly1.x!=frog.x)
+		{
+			sitFly(fly1);
+		}
+		if(fly1.y==frog.y && fly1.x==frog.x)
+		break;
 		usleep((sec)/18);
 	}
 	printw(" ");
@@ -355,25 +360,34 @@ int main()
 	}
       
     
-	for (int i = 0; i <1; i++)
+	for (int i = 0; i <5; i++)
 	{
 		thr[i].join();
-		thr2[i].join();
 		thr3[i].join();
-		thr4[i].join();
-		thr5[i].join();
-		thr6[i].join();
-		thr7[i].join();
-		thr8[i].join();
-		thr9[i].join();
 		thr10[i].join();
 		thr11[i].join();
+	}
+	for(int i=0; i<2; i++)
+	{
+		thr2[i].join();
+		thr4[i].join();
+		thr6[i].join();
+		thr7[i].join();
+		thr9[i].join();
 		thr12[i].join();
-		thr13[i].join();
 		thr14[i].join();
 		thr15[i].join();
-		flyThreads[i].join();
+
 	} 
+	for(int i=0; i<3; i++)
+	{
+		thr5[i].join();
+		thr8[i].join();
+		thr13[i].join();
+
+	}
+	for(int i=0; i<4; i++)
+	flyThreads[i].join();
     frogThread.join();
 	getch();
 	//while(true);
